@@ -1,0 +1,54 @@
+#header {
+    text-align: center;
+}
+
+#logout {
+    float: right;
+    margin-right: 16px;
+}
+
+#joystick {
+    position: relative;
+    width: 270px;
+    height: 270px;
+}
+
+@media screen and (max-width: 550px) {
+    body {
+        width: 443px;
+        margin: 0 auto;
+    }
+
+    #camera {
+        width: 427px;
+        height: 240px;
+    }
+    
+    #joystick {
+        margin-left: 78px;
+    }
+    
+    .hide-mobile {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 550px) {
+    body {
+        width: 870px;
+        margin: 0 auto;
+    }
+
+    #camera {
+        width: 854px;
+        height: 480px;
+    }
+    
+    #joystick {
+        margin-left: 292px;
+    }
+    
+    .hide-desktop {
+        display: none;
+    }
+}
