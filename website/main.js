@@ -24,29 +24,37 @@ function moveJoystick(data) {
     if (data.force <= 0.3) {
         command_new = "";
     }
+    else if (15 <= deg && deg < 75) {
+        // up right
+        command_new = "wd";
+    }
     else if (75 <= deg && deg < 105) {
         // up
         command_new = "w";
     }
-    else if (105 <= deg && deg < 180) {
+    else if (105 <= deg && deg < 165) {
         // up left
         command_new = "wa";
     }
-    else if (0 <= deg && deg < 75) {
-        // up right
-        command_new = "wd";
+    else if (165 <= deg && deg < 195) {
+        // left
+        command_new = "a";
     }
-    else if (225 <= deg && deg < 315) {
-        // down
-        command_new = "s";
-    }
-    else if (180 <= deg && deg < 225) {
+    else if (195 <= deg && deg < 255) {
         // down left
         command_new = "sa";
     }
-    else if (315 <= deg && deg < 360) {
+    else if (255 <= deg && deg < 285) {
+        // down
+        command_new = "s";
+    }
+    else if (285 <= deg && deg < 345) {
         // down right
         command_new = "sd";
+    }
+    else if (345 <= deg < 360 || 0 <= deg < 15) {
+        // right
+        command_new = "d";
     }
     if (command_new != command) {
         command = command_new;

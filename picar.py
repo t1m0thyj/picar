@@ -18,8 +18,8 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 TRIG = 38
 ECHO = 40
-GPIO.setup(TRIG,GPIO.OUT)
-GPIO.setup(ECHO,GPIO.IN)
+GPIO.setup(TRIG, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
 GPIO.output(TRIG, False)
 time.sleep(2)
 
@@ -33,8 +33,7 @@ class PiCar:
         self.command_history = []
         self.stop_button_pressed = False
 
-        hostname = subprocess.check_output(["hostname", "-I"]).split()
-        ipv4 = [ip for ip in hostname if b":" not in ip][-1]
+        ipv4 = subprocess.check_output("hostname -I | cut -d' ' -f1", shell=True)
         with self.conn.cursor() as cur:
             cur.execute("UPDATE PiCar SET Value=%s WHERE Name='IP'", (ipv4,))
 
@@ -58,7 +57,7 @@ class PiCar:
                 distance = self.get_distance()
                 if distance > 0 and distance < 50:
                     print("Distance from rear: %d" % distance)
-                    command += "@"
+                    command = "@" + command
         if DEBUG:
             print(command)
         self.last_command = command
@@ -101,7 +100,7 @@ class PiCar:
             if command != "r":
                 self.command_history.append([command, time.time()])
                 self.update_motor_states(command)
-                self.update_gpio()
+                self.update_gpio(command)
                 if command == "x":
                     stopped = True
                     break
@@ -139,16 +138,20 @@ class PiCar:
         if DEBUG:
             print("M1: %d, M2: %d" % (self.motor1_state, self.motor2_state))
 
-    def update_gpio(self):
+    def update_gpio(self, command):
+        speed = 100
+        if "," in command:
+            speed = int(command.split(",")[1])
+
         if self.motor1_state == 1:
-            GPIO.output(FORWARD_PIN, 1)
-            GPIO.output(BACKWARD_PIN, 0)
+            pwm_f.ChangeDutyCycle(speed)
+            pwm_b.ChangeDutyCycle(0)
         elif self.motor1_state == 0:
-            GPIO.output(FORWARD_PIN, 0)
-            GPIO.output(BACKWARD_PIN, 0)
+            pwm_f.ChangeDutyCycle(0)
+            pwm_b.ChangeDutyCycle(0)
         elif self.motor1_state == -1:
-            GPIO.output(FORWARD_PIN, 0)
-            GPIO.output(BACKWARD_PIN, 1)
+            pwm_f.ChangeDutyCycle(0)
+            pwm_b.ChangeDutyCycle(speed)
 
         if self.motor2_state == 1:
             GPIO.output(LEFT_PIN, 0)
@@ -176,6 +179,7 @@ class PiCar:
 
 
 def main():
+    global pwm_f, pwm_b
     if DEBUG:
         print("Welcome to the Pi Car Connection Service!")
 
@@ -183,6 +187,10 @@ def main():
     #GPIO.setwarnings(False)
     for pin in (FORWARD_PIN, BACKWARD_PIN, LEFT_PIN, RIGHT_PIN):
         GPIO.setup(pin, GPIO.OUT)
+    pwm_f = GPIO.PWM(FORWARD_PIN, 1000)
+    pwm_f.start(0)
+    pwm_b = GPIO.PWM(BACKWARD_PIN, 1000)
+    pwm_b.start(0)
 
     car = PiCar()
     car.initialize()

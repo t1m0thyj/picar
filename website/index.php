@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/custom.css">
 </head>
 <body>
-    <h1 id="header">Pi Car Control Panel</h1>
+    <h2 id="header">Pi Car Control Panel</h2>
 
     <?php
     if (!empty($_POST)) {
@@ -43,7 +43,11 @@
         <a id="logout" href="/logout.php">Log Out</a>
     </p>
 
-    <iframe id="camera" src="//<?php echo $_SESSION["ip"]; ?>/html/min.php"></iframe>
+    <div id="camera-container">
+        <div id="camera-iframe">
+            <iframe id="camera" src="//<?php echo $_SESSION["ip"]; ?>/html/min.php" width="854" height="480"></iframe>
+        </div>
+    </div>
 
     <div id="joystick"></div>
 
@@ -59,8 +63,8 @@
         zone: document.getElementById("joystick"),
         mode: "static",
         color: "blue",
-        position: {left: "135px", top: "135px"},
-        size: 256
+        position: {left: "50%", top: "50%"},
+        size: 200
     });
     joystick.on('move', function(evt, data) {
         moveJoystick(data);
