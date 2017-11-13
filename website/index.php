@@ -1,18 +1,21 @@
-<?php session_start(); ?>
+<?php
+session_name("picar");
+session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pi Car Control Panel</title>
-    <link rel="stylesheet" href="/custom.css">
+    <link rel="stylesheet" href="/picar/custom.css">
 </head>
 <body>
     <h2 id="header">Pi Car Control Panel</h2>
 
     <?php
     if (!empty($_POST)) {
-        $conn = new mysqli("localhost", "picar_user", $_POST["pw"], "picar_db");
+        $conn = new mysqli("localhost", "lintx10h_public", $_POST["pw"], "lintx10h_picar");
     
         if (mysqli_connect_errno()) {
             session_destroy();
@@ -40,7 +43,7 @@
     <p>
         <button type="button" onclick="startButton()">Start</button>
         <button type="button" onclick="stopButton()">Stop</button>
-        <a id="logout" href="/logout.php">Log Out</a>
+        <a id="logout" href="/picar/logout.php">Log Out</a>
     </p>
 
     <div id="camera-container">
@@ -57,7 +60,7 @@
     </div>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/nipplejs/0.6.7/nipplejs.min.js"></script>
-    <script type="text/javascript" src="/main.js"></script>
+    <script type="text/javascript" src="/picar/main.js"></script>
     <script type="text/javascript">
     var joystick = nipplejs.create({
         zone: document.getElementById("joystick"),

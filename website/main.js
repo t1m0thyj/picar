@@ -56,6 +56,9 @@ function moveJoystick(data) {
         // right
         command_new = "d";
     }
+    if (command_new !== "") {
+        command_new += "," + Math.min(100, Math.round(data.force * 100));
+    }
     if (command_new != command) {
         command = command_new;
         sendCommand(command);
