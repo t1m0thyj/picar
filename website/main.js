@@ -19,7 +19,6 @@ function stopButton() {
 }
 
 function moveJoystick(data) {
-    //console.log(data);
     var deg = data.angle.degree;
     if (data.force <= 0.3) {
         command_new = "";
@@ -59,7 +58,7 @@ function moveJoystick(data) {
     if (command_new !== "") {
         command_new += "," + Math.min(100, Math.round(data.force * 100));
     }
-    if (command_new != command) {
+    if (command_new !== command) {
         command = command_new;
         sendCommand(command);
     }
@@ -72,60 +71,75 @@ function endJoystick() {
 
 function onKeyDownEvent(e) {
     e = e || window.event;
-    if ((e.keyCode == '87') && (command.indexOf('w') == -1)) {
+    command_new = command;
+    if (e.keyCode == '87' || e.keyCode == '38') {
         // up arrow
-        command += "w";
-        sendCommand(command);
+        if (command.indexOf('w') == -1) {
+            command += "w";
+        }
+        command_new = command;
     }
-    else if ((e.keyCode == '83') && (command.indexOf('s') == -1)) {
+    else if (e.keyCode == '83' || e.keyCode == '40') {
         // down arrow
-        command += "s";
-        sendCommand(command);
+        if (command.indexOf('s') == -1) {
+            command += "s";
+        }
+        command_new = command;
     }
-    else if ((e.keyCode == '65') && (command.indexOf('a') == -1)) {
-       // left arrow
-       command += "a";
-       sendCommand(command);
+    else if (e.keyCode == '65' || e.keyCode == '37') {
+        // left arrow
+        if (command.indexOf('a') == -1) {
+            command += "a";
+        }
+        command_new = command;
     }
-    else if ((e.keyCode == '68') && (command.indexOf('d') == -1)) {
-       // right arrow
-       command += "d";
-       sendCommand(command);
+    else if (e.keyCode == '68' || e.keyCode == '39') {
+        // right arrow
+        if (command.indexOf('d') == -1) {
+            command += "d";
+        }
+        command_new = command;
     }
     else if (e.keyCode == '89') {
-       // y
-       command = "";
-       sendCommand("y");
+        // y
+        command = "";
+        command_new = "y";
     }
     else if (e.keyCode == '88') {
-       // x
-       command = "";
-       sendCommand("x");
+        // x
+        command = "";
+        command_new = "x";
     }
     else if (e.keyCode == '82') {
-       // r
-       command = "";
-       sendCommand("r");
+        // r
+        command = "";
+        command_new = "r";
+    }
+    if (e.shiftKey) {
+        command_new += ",66";
+    }
+    if (command_new !== "") {
+        sendCommand(command_new);
     }
 }
 
 function onKeyUpEvent(e) {
     e = e || window.event;
-    if (e.keyCode == '87') {
+    if (e.keyCode == '87' || e.keyCode == '38') {
         // up arrow
         command = command.replace('w', '');
     }
-    else if (e.keyCode == '83') {
+    else if (e.keyCode == '83' || e.keyCode == '40') {
         // down arrow
         command = command.replace('s', '');
     }
-    else if (e.keyCode == '65') {
-       // left arrow
-       command = command.replace('a', '');
+    else if (e.keyCode == '65' || e.keyCode == '37') {
+        // left arrow
+        command = command.replace('a', '');
     }
-    else if (e.keyCode == '68') {
-       // right arrow
-       command = command.replace('d', '');
+    else if (e.keyCode == '68' || e.keyCode == '39') {
+        // right arrow
+        command = command.replace('d', '');
     }
     sendCommand(command);
 }
